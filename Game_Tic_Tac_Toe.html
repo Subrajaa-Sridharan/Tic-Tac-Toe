@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+  <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+  <head>
+    TIC TAC TOE - SINGLE ROOM
+  </head>
+  <br><br><br><br><br><br><br><br><br>
+  <body>
+    <section>
+        <div class="game--container">
+            <div onclick="mark('X',0)" class="cell">
+              <p id="0"></p>
+            </div>
+            <div onclick="mark('X',1)" class="cell">
+              <p id="1"></p>
+            </div>
+            <div onclick="mark('X',2)" class="cell">
+              <p id="2"></p>
+            </div>
+            <div onclick="mark('X',3)" class="cell">
+              <p id="3"></p>
+            </div>
+            <div onclick="mark('X',4)" class="cell">
+              <p id="4"></p>
+            </div>
+            <div onclick="mark('X',5)" class="cell">
+              <p id="5"></p>
+            </div>
+            <div onclick="mark('X',6)" class="cell">
+              <p id="6"></p>
+            </div>
+            <div onclick="mark('X',7)" class="cell">
+              <p id="7"></p>
+            </div>
+            <div onclick="mark('X',8)" class="cell">
+              <p id="8"></p>
+            </div>
+        </div>
+    </section>
+    <br><br>
+    <p id="player">User's turn</p>
+    <br><br><br>
+    <p id="status"></p>
+    <button class="button" onclick="restart()">
+      RESTART
+    </button>
+    <script>
+      // Matrix to keep track of the game
+      var game_matrix = new Array(3);
+      for(var i=0;i<3;i++)
+      {
+        game_matrix[i] = new Array(3);
+      }
+      for(var i=0;i<3;i++)
+      {
+        for(var j=0;j<3;j++)
+        {
+          game_matrix[i][j] = 'N';
+        }
+      }
+      // Variable to check who won
+      var won = 'N';
+      // Array to keep count of all the cells already marked
+      var visited = new Array(9);
+      for(var i=0;i<9;i++)
+      {
+        visited[i]=false;
+      }
+      // Array that contains all the random moves the computer would make
+      var random_moves = [];
+			while(random_moves.length < 9)
+      {
+        var r = Math.floor(Math.random() * (9));
+    		if(random_moves.indexOf(r) === -1) random_moves.push(r);
+      }
+      // A counter to keep track of the random_moves array
+      var random_counter = 0;
+      // Variable to toggle between the user and the computer
+      var flag = 0;
+      // Variable to keep track of the total game moves
+      var game_counter=0;
+
+      // Function to mark a specific cell
+      function mark(marking,n){
+        if(visited[n]==true)
+        {
+          window.alert("Already filled");
+          return;
+        }
+        else {
+          document.getElementById(n).innerHTML = marking;
+          let r=Math.trunc(n/3);
+          let c=n%3;
+          game_matrix[r][c] = marking;
+          visited[n] = true;
+          game_counter+=1;
+          gameStatus();
+        }
+      }
+
+      // Function to check if there is a winner
+      function gameStatus(){
+
+        // Conditions to check all the 8 patterns that would make a winner
+        if(game_matrix[0][0]==game_matrix[0][1] && game_matrix[0][0]==game_matrix[0][2])
+        {
+          won = game_matrix[0][0];
+        }
+        else if(game_matrix[1][0]==game_matrix[1][1] && game_matrix[1][0]==game_matrix[1][2])
+        {
+          won = game_matrix[1][0];
+        }
+        else if(game_matrix[2][0]==game_matrix[2][1] && game_matrix[2][0]==game_matrix[2][2])
+        {
+          won = game_matrix[2][0];
+        }
+        else if(game_matrix[0][0]==game_matrix[1][0] && game_matrix[0][0]==game_matrix[2][0])
+        {
+          won = game_matrix[0][0];
+        }
+        else if(game_matrix[0][1]==game_matrix[1][1] && game_matrix[0][1]==game_matrix[2][1])
+        {
+          won = game_matrix[0][1];
+        }
+        else if(game_matrix[0][2]==game_matrix[1][2] && game_matrix[0][2]==game_matrix[2][2])
+        {
+          won = game_matrix[0][2];
+        }
+        else if(game_matrix[0][0]==game_matrix[1][1] && game_matrix[0][0]==game_matrix[2][2])
+        {
+          won = game_matrix[0][0];
+        }
+        else if(game_matrix[0][2]==game_matrix[1][1] && game_matrix[0][2]==game_matrix[2][0])
+        {
+          won = game_matrix[0][2];
+        }
+
+        // Check if the game is over
+        if(won=='X')
+        {
+          document.getElementById("player").innerHTML = "";
+          document.getElementById("status").innerHTML = "Game won by X";
+          flag=-1;
+          setTimeout(restart, 3000);
+        }
+        else if(won=='O')
+        {
+          document.getElementById("player").innerHTML = "";
+          document.getElementById("status").innerHTML = "Game won by O";
+          flag=-1
+          setTimeout(restart, 3000);
+        }
+        else if(game_counter==9)
+        {
+          document.getElementById("player").innerHTML = "";
+          document.getElementById("status").innerHTML = "Game tied";
+        }
+
+        // Toggling between the user and the computer
+        if(flag==0)
+        {
+          if(game_counter<8)
+            document.getElementById("player").innerHTML = "Computer's turn";
+          flag=1;
+          setTimeout(computerMove, 3000);
+          return;
+        }
+        else if(flag==1) {
+          flag = 0;
+          if(game_counter<9)
+            document.getElementById("player").innerHTML = "User's turn";
+          return;
+        }
+      }
+
+      // Function to restart the game
+      function restart(){
+        window.location.reload();
+      }
+
+      // Function for the computer to make a move
+      function computerMove()
+      {
+        if(game_counter>=8)
+          return;
+        let move = random_moves[random_counter];
+        random_counter +=1;
+        while(visited[move]==true && random_counter<9)
+        {
+          move=random_moves[random_counter];
+          random_counter+=1;
+        }
+        mark('O',move);
+        return;
+      }
+    </script>
+
+  </body>
+</html>
